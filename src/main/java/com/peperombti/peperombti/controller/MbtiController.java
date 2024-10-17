@@ -1,6 +1,7 @@
 package com.peperombti.peperombti.controller;
 
 import com.peperombti.peperombti.dto.request.ResultRequestDto;
+import com.peperombti.peperombti.dto.response.ParticipantCountResponseDto;
 import com.peperombti.peperombti.dto.response.QuestionResponseDto;
 import com.peperombti.peperombti.dto.response.ResultResponseDto;
 import com.peperombti.peperombti.service.MbtiService;
@@ -27,6 +28,12 @@ public class MbtiController {
     @PostMapping("/result")
     public CompletableFuture<ResponseEntity<? super ResultResponseDto>> calculateMbtiResult(@RequestBody ResultRequestDto dto) {
         CompletableFuture<ResponseEntity<? super ResultResponseDto>> response = mbtiService.calculateResult(dto);
+        return response;
+    }
+
+    @GetMapping("/participant")
+    public ResponseEntity<? super ParticipantCountResponseDto> getParticipantCount() {
+        ResponseEntity<? super ParticipantCountResponseDto> response = mbtiService.getParticipantCount();
         return response;
     }
 }

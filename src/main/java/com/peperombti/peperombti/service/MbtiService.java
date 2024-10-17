@@ -4,6 +4,7 @@ import com.peperombti.peperombti.domain.ParticipantCount;
 import com.peperombti.peperombti.domain.Question;
 import com.peperombti.peperombti.dto.OptionDto;
 import com.peperombti.peperombti.dto.request.ResultRequestDto;
+import com.peperombti.peperombti.dto.response.ParticipantCountResponseDto;
 import com.peperombti.peperombti.dto.response.QuestionResponseDto;
 import com.peperombti.peperombti.dto.response.ResultResponseDto;
 import com.peperombti.peperombti.repository.ParticipantCountRepository;
@@ -55,18 +56,24 @@ public class MbtiService {
         return QuestionResponseDto.success(questionList, option1List, option2List);
     }
 
+    public ResponseEntity<? super ParticipantCountResponseDto> getParticipantCount() {
+        Long participants;
+        try {
+            String redisKey = "participant";
+            String redisParticipants = redisTemplate.opsForValue().get(redisKey);
+            participants = Long.parseLong(redisParticipants);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ParticipantCountResponseDto.databaseError();
+        }
+        return ParticipantCountResponseDto.success(participants);
+    }
+
     @Async
     public CompletableFuture<ResponseEntity<? super ResultResponseDto>> calculateResult(ResultRequestDto dto) {
         String mbti;
         try {
-            System.out.println("Received E: " + dto.getE());
-            System.out.println("Received I: " + dto.getI());
-            System.out.println("Received S: " + dto.getS());
-            System.out.println("Received N: " + dto.getN());
-            System.out.println("Received T: " + dto.getT());
-            System.out.println("Received F: " + dto.getF());
-            System.out.println("Received J: " + dto.getJ());
-            System.out.println("Received P: " + dto.getP());
+
             mbti = calcMbti(dto.getE(), dto.getI(), dto.getS(), dto.getN(), dto.getT(), dto.getF(), dto.getJ(), dto.getP());
 
             if (mbti.length() != 4)
