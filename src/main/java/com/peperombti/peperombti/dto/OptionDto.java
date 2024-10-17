@@ -1,4 +1,4 @@
-package com.peperombti.peperombti.dto.response;
+package com.peperombti.peperombti.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
