@@ -61,6 +61,10 @@ public class MbtiService {
         try {
             String redisKey = "participant";
             String redisParticipants = redisTemplate.opsForValue().get(redisKey);
+            if (redisParticipants == null) {
+                redisTemplate.opsForValue().set("participant", "0");
+                redisParticipants = redisTemplate.opsForValue().get("participant");
+            }
             participants = Long.parseLong(redisParticipants);
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,6 +135,11 @@ public class MbtiService {
     @Scheduled(cron = "0 */3 * * * *")
     public void syncParticipantCount() {
         String participantCache = redisTemplate.opsForValue().get("participant");
+        if (participantCache == null) {
+            redisTemplate.opsForValue().set("participant", "0");
+            participantCache = redisTemplate.opsForValue().get("participant");
+        }
+
         Long participantCount = Long.parseLong(participantCache);
 
         Optional<ParticipantCount> optionalParticipantCount = participantCountRepository.findById(1L);
