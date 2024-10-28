@@ -7,12 +7,16 @@ COPY gradlew .
 COPY gradle gradle
 COPY build.gradle settings.gradle ./
 
-# Gradle 실행 권한 부여 및 의존성 캐싱
-RUN chmod +x ./gradlew
+# Gradle Wrapper에 실행 권한 부여
+RUN chmod +x gradlew
+
+# 의존성 캐싱을 위해 dependencies만 설치
 RUN ./gradlew dependencies --no-daemon
 
-# 전체 소스 복사 및 빌드 실행 (테스트 제외)
+# 전체 소스 복사
 COPY . .
+
+# 빌드 실행 (테스트 제외)
 RUN ./gradlew bootJar --no-daemon
 
 # 빌드된 jar 파일을 이미지에 추가
